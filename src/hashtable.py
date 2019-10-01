@@ -56,7 +56,23 @@ class HashTable:
         Fill this in.
         """
         index = self._hash_mod(key)
-        self.storage[index] = value
+
+        if self.storage[index] is not None:
+            pair = self.storage[index]
+            finished = False
+
+            while pair is not None and not finished:
+                if pair.key is key:
+                    pair.value = value
+                    finished = True
+                elif pair.next is None:
+                    pair.next = LinkedPair(key, value)
+                    found = True
+                else:
+                    pair = pair.next
+
+        else:
+            self.storage[index] = LinkedPair(key, value)
 
     def remove(self, key):
         """
@@ -67,10 +83,12 @@ class HashTable:
         Fill this in.
         """
         index = self._hash_mod(key)
-        if self.storage[index] not in self.storage:
-            return print(f"The index {index} was not found.")
-        else:
-            del self.storage[index]
+
+        if self.storage[index] is None:
+            print(f"The index {index} was not found.")
+            return
+
+        self.storage[index] = None
 
     def retrieve(self, key):
         """
@@ -80,11 +98,35 @@ class HashTable:
 
         Fill this in.
         """
+        # index = self._hash_mod(key)
+        # if self.storage[index] not in self.storage:
+        #     return None
+        # else:
+        #     return self.storage[index]
+        # return self.storage[index].value
+
+        # index = self._hash_mod(key)
+        # pair = self.storage[index]
+
+        # if pair is None:
+        #     return None
+        # else:
+        #     return pair.value
+
         index = self._hash_mod(key)
-        if self.storage[index] not in self.storage:
-            return None
-        else:
-            return self.storage[index]
+        pair = self.storage[index]
+
+        if pair is not None:
+            current_pair = self.storage[index]
+
+            while current_pair is not None:
+                if current_pair.key is key:
+                    return current_pair.value
+                else:
+                    current_pair = current_pair.next
+
+            else:
+                return None
 
     def resize(self):
         """
@@ -93,10 +135,20 @@ class HashTable:
 
         Fill this in.
         """
+        # self.capacity *= 2
+        # new_storage = [None] * self.capacity
+        # for i in range(len(self.storage)):
+        #     new_storage[i] = self.storage[i]
+
+        # self.storage = new_storage
+
         self.capacity *= 2
         new_storage = [None] * self.capacity
-        for i in range(len(self.storage)):
-            new_storage[i] = self.storage[i]
+
+        for pair in self.storage:
+            if pair is not None:
+                new_index = self._hash_mod(pair.key)
+                new_storage[new_index] = pair
 
         self.storage = new_storage
 
