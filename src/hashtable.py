@@ -82,12 +82,14 @@ class HashTable:
 
         Fill this in.
         """
+
         index = self._hash_mod(key)
 
         if self.storage[index] is None:
             print(f"The index {index} was not found.")
             return
 
+        # Something is going wrong in this method.
         self.storage[index] = None
 
     def retrieve(self, key):
