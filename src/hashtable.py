@@ -83,14 +83,30 @@ class HashTable:
         Fill this in.
         """
 
+        # index = self._hash_mod(key)
+
+        # if self.storage[index] is None:
+        #     print(f"The index {index} was not found.")
+        #     return
+
+        # # Something is going wrong in this method.
+        # self.storage[index] = None
+
         index = self._hash_mod(key)
 
         if self.storage[index] is None:
-            print(f"The index {index} was not found.")
+            print(f"Nothing found at index {index}.")
             return
 
-        # Something is going wrong in this method.
-        self.storage[index] = None
+        current_pair = self.storage[index]
+
+        searching = True
+        while current_pair is not None and searching is True:
+            if current_pair.key == key:
+                self.storage[index] = None
+                searching = False
+            else:
+                current_pair = current_pair.next
 
     def retrieve(self, key):
         """
@@ -127,8 +143,8 @@ class HashTable:
                 else:
                     current_pair = current_pair.next
 
-            else:
-                return None
+        else:
+            return None
 
     def resize(self):
         """
@@ -144,15 +160,30 @@ class HashTable:
 
         # self.storage = new_storage
 
+        # self.capacity *= 2
+        # new_storage = [None] * self.capacity
+
+        # for pair in self.storage:
+        #     if pair is not None:
+        #         new_index = self._hash_mod(pair.key)
+        #         new_storage[new_index] = pair
+
+        # self.storage = new_storage
+
         self.capacity *= 2
         new_storage = [None] * self.capacity
-
-        for pair in self.storage:
-            if pair is not None:
-                new_index = self._hash_mod(pair.key)
-                new_storage[new_index] = pair
-
+        copy = self.storage
         self.storage = new_storage
+        # self.storage = new_storage
+
+        for pair in copy:
+            if pair is not None:
+                current_pair = pair
+                while current_pair is not None:
+                    self.insert(current_pair.key, current_pair.value)
+                    current_pair = current_pair.next
+
+        # self.storage = new_storage
 
 
 if __name__ == "__main__":
